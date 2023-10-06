@@ -1,5 +1,5 @@
 /*
-* Enter the code for home page that leds after Submit Page line 63
+* make homepage for both company and users
 * */
 
 package Project.GUI;
@@ -15,7 +15,7 @@ public class LoginIn extends JFrame {
     JLabel UsernameLabel, PasswordLabel, MessageLabel;
     JTextField UsernameField;
     JPasswordField PasswordField;
-    JButton SubmitButton, RegisterButton;
+    JButton SubmitButton, RegisterButton, CompanyRegisterButton;
     String username, password;
 
     public LoginIn(){
@@ -30,7 +30,7 @@ public class LoginIn extends JFrame {
 
         SubmitButton = new JButton("Login");
         RegisterButton = new JButton("Register");
-
+        CompanyRegisterButton = new JButton("Company Registration");
 
         UsernameLabel.setBounds(100, 100, 100, 30);  // (x, y, width, height)
         PasswordLabel.setBounds(100, 150, 100, 30);  // (x, y, width, height)
@@ -40,6 +40,7 @@ public class LoginIn extends JFrame {
         PasswordField.setBounds(220, 150, 200, 30);  // (x, y, width, height)
         SubmitButton.setBounds(100, 200, 100, 30);  // (x, y, width, height)
         RegisterButton.setBounds(220, 200, 100, 30);  // (x, y, width, height)
+        CompanyRegisterButton.setBounds(330, 200, 180, 30);  // Adjust the position and size as needed
 
 
         add(UsernameLabel);
@@ -48,6 +49,7 @@ public class LoginIn extends JFrame {
         add(PasswordField);
         add(SubmitButton);
         add(RegisterButton);
+        add(CompanyRegisterButton);
         add(MessageLabel);
 
         //Submit Button Check
@@ -63,8 +65,20 @@ public class LoginIn extends JFrame {
                 MessageLabel.setText("Please enter the Password");
             }
             if(checkUserNameExist(username)){
-                if(checkUserNamePassword(username, password)){
+                if(checkUserNamePassword(username, password)) {
                     // sent message Login Successfully  and led to the next page
+                    if(UserType(username).equals("Company")){  // check what kind of user has come
+                        // the company home page
+                        dispose();
+                        CanditateHomePage page = new CanditateHomePage();
+                        System.out.println("Company");
+
+                    }else{
+                        // the interhome page
+                        dispose();
+                        InternHomePage page = new InternHomePage();
+                        System.out.println("Intern");
+                    }
                     System.out.println("YEss Broo");
                     MessageLabel.setText("Login Successful.");
             }else {
@@ -76,15 +90,16 @@ public class LoginIn extends JFrame {
             // User does not exist
 
                 MessageLabel.setText("User does not exist.");
-        }
-
-        }
-
-        );
+        }});
 
         // Register Button action, in case the user is not register
         RegisterButton.addActionListener( Al -> {
-            RegisterPage Page = new RegisterPage();
+            UserRegisterPage Page = new UserRegisterPage();
+            dispose();
+        });
+
+        CompanyRegisterButton.addActionListener(e -> {
+            ComapnyRegisterPage Page = new ComapnyRegisterPage();
             dispose();
         });
 
@@ -93,16 +108,46 @@ public class LoginIn extends JFrame {
 
     }
 
-    private boolean checkUserNamePassword(String username, String password) {
-        boolean passwordCorrect = false;
+    private String UserType(String username) {
+        openDatabaseConnection();
+        String type = "";
 
         try {
-            openDatabaseConnection(); // Open the connection
+            // The query
+            String query = "SELECT Type FROM users WHERE username = ?";
+            //
+            PreparedStatement preparedStatement = dbConnection.getConnection().prepareStatement(query);
+            /* dbConnection.getConnection() -- to get the database connection
+            * prepare SQL statement with query as argument
+            * */
+            preparedStatement.setString(1, username); // set the parameters for the preparedStatement
+
+            ResultSet resultSet = preparedStatement.executeQuery(); // to recieve the statement
+
+            if (resultSet.next()) {  // to check if therer are multipe line
+                type = resultSet.getString("Type"); // to put the type in the String
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // to print the excepiton or error that occur while getting the return
+            // Handle the exception as needed
+        } finally {
+            closeDatabaseConnection();
+        }
+
+        return type;
+    }
+
+    // to check if the password exists and if then check if the password is correct
+    private boolean checkUserNamePassword(String username, String password) { // Check if the password is correct
+        boolean passwordCorrect = false;
+        openDatabaseConnection(); // Open the connection
+        try {
+
             Connection connection = dbConnection.getConnection();
 
-            String query = "SELECT Passcode FROM users WHERE username = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setString(1, username);
+            String query = "SELECT Passcode FROM users WHERE username = ?"; // the query
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {  // prepare the statement
+                preparedStatement.setString(1, username);  // set the parameter with arguments
 
                 // Execute the query
                 ResultSet resultSet = preparedStatement.executeQuery();
