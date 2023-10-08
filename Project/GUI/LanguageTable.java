@@ -1,4 +1,8 @@
-package Project;
+/*
+* Get the RadioButton entry
+* */
+
+package Project.GUI;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
