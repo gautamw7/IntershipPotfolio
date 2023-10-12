@@ -7,7 +7,6 @@ package Project.GUI;
 
 import Project.DatabaseConnection;
 import Project.Authentication;
-
 import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -74,8 +73,7 @@ public class UserRegisterPage extends JFrame {
         nextFrameButton.addActionListener(e -> {
             // Handle registration logic here
             insertData();
-            dispose();
-            LanguageTable obj = new LanguageTable();
+
         });
 
 
@@ -135,14 +133,13 @@ public class UserRegisterPage extends JFrame {
                 }else{
                     messageField.setText("User Name Exists in the database ");
                     ProgressBarSetUp();
-                    ReloadPage();
+
                 }
             } else {
                 // Passwords don't match, show an error message
                 // Add a progress bar here if needed
                 messageField.setText("Password & Confirm Password Don't match");
                 ProgressBarSetUp();
-                ReloadPage();
                 // Reload the registration page
             }
         }
@@ -159,6 +156,8 @@ public class UserRegisterPage extends JFrame {
             if (progress >= 10) {
                 ((Timer) e.getSource()).stop(); // Stop the timer when progress reaches 10
                 addDataToDatabase(name, phoneNumber, email, password, InstituteName, address);
+                dispose();
+                LanguageTable obj = new LanguageTable(name);
             } else {
                 progress++;
                 progressBar.setValue(progress);
@@ -168,24 +167,20 @@ public class UserRegisterPage extends JFrame {
         timer.start();
     }
 
-    private void ReloadPage() {
-        UserRegisterPage reload = new UserRegisterPage();
-        dispose();
-    }
 
-    private void addDataToDatabase(String name, String phoneNumber, String email, String password , String instituteName, String address) {
+    private void addDataToDatabase(String name, String phoneNumber, String email, String password , String InstituteName, String address) {
         openDatabaseConnection();
 
         try {
-            String insertQuery = "INSERT INTO users (username, contact_no, email, Passcode,type ,Type, InstitueName,Address) VALUES (?, ?, ?, ?, ?, ? ,?)";
+            String insertQuery = "INSERT INTO users (username, contact_no, email, Passcode, Type, InstitueName, Address) VALUES (?, ?, ?, ?, ?, ? ,?)";
             PreparedStatement preparedStatement = dbConnection.getConnection().prepareStatement(insertQuery);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, phoneNumber);
             preparedStatement.setString(3, email);
             preparedStatement.setString(4, password);
             preparedStatement.setString(5, "Intern");
-            preparedStatement.setString(6,"VIT");  // add the label and field for the same and then enter the data
-            preparedStatement.setString(7,"Pune");  // add the label and field fro the same and then enter the details
+            preparedStatement.setString(6,InstituteName);  // add the label and field for the same and then enter the data
+            preparedStatement.setString(7,address);  // add the label and field fro the same and then enter the details
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -203,13 +198,15 @@ public class UserRegisterPage extends JFrame {
         // The rest of your code to handle UI or page redirection
     }
 
-
-
     private void openDatabaseConnection(){
         dbConnection = new DatabaseConnection();
     }
     private void closeDatabaseConnection() {
         dbConnection.closeConnection();
+    }
+
+    public static void main(String[] args){
+        UserRegisterPage page = new UserRegisterPage();
     }
 
 }

@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class InternHomePage extends JFrame {
-    public InternHomePage() {
+    public InternHomePage(String name) {
         // The name of the home page
         setTitle("Intern Home Page");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
