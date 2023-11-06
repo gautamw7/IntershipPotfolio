@@ -1,0 +1,46 @@
+CREATE TABLE candidate_preferences (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    Android_Java_Kotlin INT(11),
+    C INT(11),
+    Cpp INT(11),
+    Rust INT(11),
+    Go INT(11),
+    iOS_Swift_Objective_C INT(11),
+    Java_Non_Android INT(11),
+    JavaScript INT(11),
+    TypeScript INT(11),
+    Julia INT(11),
+    PHP INT(11),
+    Python INT(11),
+    Ruby INT(11),
+    codeSQL INT(11),
+    Haskell INT(11),
+    OCaml INT(11),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE users (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) UNIQUE,
+    contact_no VARCHAR(15),
+    email VARCHAR(255) UNIQUE,
+    Passcode VARCHAR(255),
+    Type VARCHAR(255),
+    InstitueName VARCHAR(255),
+    Address VARCHAR(255),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE listing (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    location VARCHAR(100),
+    Stipend VARCHAR(100),
+    Position VARCHAR(100),
+    startdate DATE,
+    endDate DATE,
+    username VARCHAR(50),
+    PRIMARY KEY (id),
+    FOREIGN KEY (username) REFERENCES users(username)
+);
+
