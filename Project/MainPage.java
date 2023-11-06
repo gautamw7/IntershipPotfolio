@@ -1,9 +1,14 @@
+/*
+* Code for getting the RadioButton ka output
+* */
+
 package Project;
 
-import Project.GUI.LoginIn;
+import Project.GUI.LoginInPage;
+
 
 public class MainPage {
     public static void main(String[] args){
-        LoginIn obj =  new LoginIn();
+        LoginInPage obj =  new LoginInPage();
     }
 }

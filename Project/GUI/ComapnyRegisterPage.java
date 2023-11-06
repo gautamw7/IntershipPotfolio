@@ -1,17 +1,8 @@
-/*
-* Progress Bar is not showing up
-* Make table in the database for the company details entry
-* Make table for Company listing
-* Write the code for connecting this page to database
-* Make Page for Company Listing
-*
-* */
-
-
+/**/
 package Project.GUI;
 
-import Project.DatabaseConnection;
 import Project.Authentication;
+import Project.DatabaseConnection;
 
 import javax.swing.*;
 import java.sql.PreparedStatement;
@@ -99,7 +90,6 @@ public class ComapnyRegisterPage extends JFrame {
         // Define all the button
         nextFrameButton.addActionListener(e -> {
             insertData();
-            LoginIn page = new LoginIn();
         });
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,59 +122,42 @@ public class ComapnyRegisterPage extends JFrame {
                     System.out.println("System authetication going on !!");
                     messageField.setText("Welcome !!!");
                     ProgressBarSetUp(name, phoneNumber, email, password, companyName, address);
-                    dispose();
+
                     // add the Company listing page here
                 }else{
                     messageField.setText("User Name Exists in the database ");
-                    ProgressBarSetUpError();
+
                 }
             } else {
                 // Passwords don't match, show an error message
                 // Add a progress bar here if needed
                 messageField.setText("Password & Confirm Password Don't match");
-                ProgressBarSetUpError();
                 // Reload the registration page
             }
         }
     }
 
-    int progress;
+    int progress  = 0;
 
-
-    private void ProgressBarSetUpError() {
+    private void ProgressBarSetUp(String name, String phoneNumber, String email, String password, String companyName, String address) {
         JProgressBar progressBar = new JProgressBar(0, 20);
         progressBar.setBounds(100, 450, 300, 30);  // Adjust the bounds as needed
         progressBar.setStringPainted(true); // Show the progress value
         progressBar.setValue(0);
-        add(progressBar);
-        Timer timer = new Timer(1000, e -> {
+        add(progressBar); // Add this to the frame
+        Timer timer = new Timer(100, e -> {
             if (progress == 10) {
                 // The code to add the data to the database
-                ReloadPage();
-            }
-            progress++;
-            progressBar.setValue(progress);
-        });
-        timer.start();
-    }
-
-    private void ProgressBarSetUp(String name, String phoneNumber, String email,String password, String companyName, String address) {
-        JProgressBar progressBar = new JProgressBar(0, 20);
-        progressBar.setBounds(100, 450, 300, 30);  // Adjust the bounds as needed
-        progressBar.setStringPainted(true); // Show the progress value
-        progressBar.setValue(0);
-        add(progressBar);
-        Timer timer = new Timer(1000, e -> {
-            if (progress == 10) {
-                // The code to add the data to the database
-                //  messageField.setText("Welcome !!!");
                 addDataToDatabase(name, phoneNumber, email, password, companyName, address);
+                dispose();
+                CompanyListingPage page = new CompanyListingPage(name);
             }
             progress++;
             progressBar.setValue(progress);
         });
         timer.start();
     }
+
 
     private void addDataToDatabase(String name, String phoneNumber, String email, String password, String companyName, String address) {
         openDatabaseConnection();
@@ -218,7 +191,6 @@ public class ComapnyRegisterPage extends JFrame {
     }
 
 
-
     private void openDatabaseConnection(){
         dbConnection = new DatabaseConnection();
     }
@@ -230,4 +202,9 @@ public class ComapnyRegisterPage extends JFrame {
         dispose();
     }
 
+    /*public static void main(String[] args){
+        ComapnyRegisterPage page = new ComapnyRegisterPage();
+    }*/
 }
+
+
